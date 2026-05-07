@@ -11,7 +11,7 @@ services:
         value: "3.11.0"
 
   # Frontend: React
-  - type: static
+  - type: static_site
     name: resume-ai-frontend
     runtime: node
     buildCommand: cd frontend && npm install && npm run build
