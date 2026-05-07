@@ -32,6 +32,20 @@ This starts the backend and frontend at the same time in one terminal.
 
 ---
 
+## Deployment on Render
+
+This project is configured for one-click deployment on **Render** using a Blueprint.
+
+1. Go to [Render Dashboard](https://dashboard.render.com/).
+2. Click **New +** and select **Blueprint**.
+3. Connect this GitHub repository.
+4. Render will automatically create:
+   - **Backend** (FastAPI)
+   - **Frontend** (React Static Site)
+5. Once deployed, the frontend will automatically connect to the backend.
+
+---
+
 ## Run separately
 
 **Backend only:**
