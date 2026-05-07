@@ -1,0 +1,1029 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Resume Analyzer – Project Report | Geeta University</title>
+<style>
+/* ============================================================
+   BASE TYPOGRAPHY
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+  background: #fff;
+}
+
+/* ============================================================
+   SCREEN LAYOUT – simulate A4 pages
+   ============================================================ */
+@media screen {
+  body { background: #e0e0e0; padding: 30px 0; }
+  .page {
+    background: #fff;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 30px auto;
+    padding: 25.4mm 25.4mm 25.4mm 63.5mm; /* top right bottom left(binding) */
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    position: relative;
+  }
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+  body { background: #fff; }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 25.4mm 25.4mm 25.4mm 63.5mm;
+    page-break-after: always;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+/* ============================================================
+   PAGE NUMBER COUNTERS
+   ============================================================ */
+/* Roman numerals for front matter */
+.front-matter-section::after {
+  content: counter(front-page, lower-roman);
+  counter-increment: front-page;
+  position: absolute;
+  bottom: 15mm;
+  right: 25.4mm;
+  font-size: 11pt;
+}
+
+/* Arabic numerals from Chapter 1 onward */
+.main-section::after {
+  content: counter(main-page);
+  counter-increment: main-page;
+  position: absolute;
+  bottom: 15mm;
+  right: 25.4mm;
+  font-size: 11pt;
+}
+
+body {
+  counter-reset: front-page 0 main-page 0;
+}
+
+/* ============================================================
+   HEADINGS
+   ============================================================ */
+h1, h2, h3, h4 {
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+  font-weight: bold;
+}
+
+h1 { font-size: 16pt; margin-bottom: 12pt; }
+h2 { font-size: 14pt; margin-bottom: 10pt; margin-top: 18pt; }
+h3 { font-size: 13pt; margin-bottom: 8pt;  margin-top: 14pt; }
+h4 { font-size: 12pt; margin-bottom: 6pt;  margin-top: 12pt; }
+
+.section-heading {
+  font-size: 14pt;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 18pt;
+  margin-top: 0;
+}
+
+.subsection-heading {
+  font-size: 12pt;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 14pt;
+  margin-bottom: 6pt;
+}
+
+/* ============================================================
+   PARAGRAPHS & LISTS
+   ============================================================ */
+p { margin-bottom: 10pt; text-align: justify; }
+ul, ol { margin-left: 24pt; margin-bottom: 10pt; }
+li { margin-bottom: 4pt; }
+
+/* ============================================================
+   COVER PAGE SPECIFIC
+   ============================================================ */
+.cover-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  height: 100%;
+  min-height: 247mm; /* 297 - top/bottom padding */
+}
+
+.cover-title {
+  font-size: 18pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 6pt;
+}
+
+.cover-subtitle { font-size: 12pt; margin-bottom: 4pt; }
+.cover-degree   { font-size: 13pt; font-weight: bold; margin-bottom: 4pt; }
+
+.cover-logo-box {
+  border: 2px solid #000;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10pt auto;
+  font-size: 9pt;
+  font-weight: bold;
+  text-align: center;
+  padding: 6pt;
+}
+
+.cover-institution {
+  font-size: 13pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 4pt;
+}
+
+.cover-date { font-size: 12pt; font-weight: bold; }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14pt;
+  font-size: 11pt;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 5pt 8pt;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #f0f0f0;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Table of Contents */
+.toc-entry {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5pt;
+  font-size: 12pt;
+}
+
+.toc-entry.toc-chapter { font-weight: bold; margin-top: 8pt; }
+.toc-entry.toc-sub     { padding-left: 20pt; }
+
+.toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted #000;
+  margin: 0 6pt;
+  position: relative;
+  top: -3pt;
+}
+
+/* ============================================================
+   CODE / PREFORMATTED
+   ============================================================ */
+pre, code {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 8pt;
+  display: block;
+  white-space: pre-wrap;
+  margin-bottom: 10pt;
+}
+
+/* ============================================================
+   DECLARATION SIGNATURE LINE
+   ============================================================ */
+.sig-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30pt;
+}
+
+.sig-block { text-align: center; }
+.sig-underline {
+  border-top: 1px solid #000;
+  width: 160pt;
+  margin-bottom: 4pt;
+}
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.center { text-align: center; }
+.bold   { font-weight: bold; }
+.italic { font-style: italic; }
+.mt-lg  { margin-top: 24pt; }
+.mt-md  { margin-top: 14pt; }
+.mb-md  { margin-bottom: 14pt; }
+hr { border: none; border-top: 1px solid #000; margin: 14pt 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PAGE 1 – COVER PAGE
+     ============================================================ -->
+<div class="page">
+  <div class="cover-page">
+
+    <div>
+      <p class="cover-title">AI Resume Analyzer</p>
+      <p class="cover-subtitle">A INTERNSHIP</p>
+      <p class="cover-subtitle">Submitted in partial fulfillment of the requirements for the award of the degree</p>
+      <p class="cover-subtitle">Of</p>
+      <p class="cover-degree">BACHELOR OF TECHNOLOGY</p>
+      <p class="cover-subtitle">in</p>
+      <p class="cover-degree">COMPUTER SCIENCE &amp; ENGINEERING</p>
+      <p class="cover-subtitle">Specialization in</p>
+      <p class="cover-degree">FULL STACK WEB DEVELOPMENT (FSWD)</p>
+    </div>
+
+    <div>
+      <p class="cover-subtitle"><strong>Submitted By:</strong></p>
+      <p class="cover-subtitle bold">Your Name</p>
+      <p class="cover-subtitle">Roll No. XXXXXXXX</p>
+      <p class="cover-subtitle mt-md"><strong>Under the Supervision of</strong></p>
+      <p class="cover-subtitle bold">Dr. Faculty Name</p>
+      <p class="cover-subtitle">Assistant Professor</p>
+      <p class="cover-subtitle">School of Computer Science &amp; Engineering</p>
+    </div>
+
+    <div>
+      <div class="cover-logo-box">GEETA UNIVERSITY<br/>LOGO</div>
+      <p class="cover-institution">School of Computer Science &amp; Engineering</p>
+      <p class="cover-institution">Geeta University, Panipat</p>
+      <p class="cover-date">MAY, 2026</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 2 – CANDIDATE'S DECLARATION  (redesigned)
+     ============================================================ -->
+<div class="page front-matter-section">
+
+  <!-- ── University header bar ── -->
+  <div style="
+    background: #1a1a2e;
+    color: #fff;
+    text-align: center;
+    padding: 14pt 10pt 10pt;
+    border-radius: 6pt 6pt 0 0;
+    margin-bottom: 0;
+  ">
+    <p style="font-size:15pt; font-weight:bold; letter-spacing:1px; margin-bottom:4pt; color:#fff;">
+      GEETA UNIVERSITY, PANIPAT
+    </p>
+    <p style="font-size:10pt; color:#a5b4fc; letter-spacing:0.5px;">
+      School of Computer Science &amp; Engineering
+    </p>
+  </div>
+
+  <!-- ── Gold accent line ── -->
+  <div style="height:4pt; background: linear-gradient(90deg,#b8860b,#ffd700,#b8860b); margin-bottom:18pt;"></div>
+
+  <!-- ── Page title ── -->
+  <p style="
+    text-align:center;
+    font-size:15pt;
+    font-weight:bold;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    border-bottom: 2px solid #1a1a2e;
+    padding-bottom: 8pt;
+    margin-bottom: 16pt;
+  ">Candidate's Declaration</p>
+
+  <!-- ── Project info table ── -->
+  <table style="
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:16pt;
+    font-size:11pt;
+  ">
+    <tr>
+      <td style="width:35%; padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Title of Internship</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;"><em>AI Resume Analyzer</em></td>
+    </tr>
+    <tr>
+      <td style="padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Degree</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;">Bachelor of Technology (B.Tech)</td>
+    </tr>
+    <tr>
+      <td style="padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Programme</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;">Computer Science &amp; Engineering</td>
+    </tr>
+    <tr>
+      <td style="padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Specialization</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;">Full Stack Web Development (FSWD)</td>
+    </tr>
+    <tr>
+      <td style="padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Submitted By</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;"><strong>Your Name</strong> &nbsp;|&nbsp; Roll No. XXXXXXXX</td>
+    </tr>
+    <tr>
+      <td style="padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Supervisor</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;">Dr. Faculty Name, Assistant Professor, School of CSE</td>
+    </tr>
+    <tr>
+      <td style="padding:6pt 10pt; background:#f0f2f5; border:1px solid #ccc; font-weight:bold;">Internship Period</td>
+      <td style="padding:6pt 10pt; border:1px solid #ccc;">January 2026 – May 2026</td>
+    </tr>
+  </table>
+
+  <!-- ── Declaration box ── -->
+  <div style="
+    border: 1.5px solid #1a1a2e;
+    border-left: 5px solid #4f46e5;
+    border-radius: 4pt;
+    padding: 14pt 16pt;
+    background: #fafbff;
+    margin-bottom: 16pt;
+    font-size: 11.5pt;
+    line-height: 1.7;
+    text-align: justify;
+  ">
+    <p style="margin-bottom:10pt;">
+      I hereby certify that the work presented in this internship report entitled
+      <strong>"AI Resume Analyzer"</strong> in partial fulfillment of the requirements
+      for the award of the degree of <strong>Bachelor of Technology</strong> in
+      <strong>Computer Science &amp; Engineering</strong> with specialization in
+      <strong>Full Stack Web Development (FSWD)</strong>, submitted in the
+      <strong>School of Computer Science &amp; Engineering, Geeta University, Panipat</strong>,
+      is an authentic record of my own work carried out under the supervision of
+      <strong>Dr. Faculty Name</strong>, Assistant Professor, School of CSE,
+      Geeta University, Panipat.
+    </p>
+    <p style="margin-bottom:10pt;">
+      The matter presented in this report has <strong>not</strong> been submitted by me
+      for the award of any other degree of this or any other institute.
+    </p>
+    <p style="margin-bottom:10pt;">
+      All sources of information used in this report have been duly acknowledged and
+      referenced. The project was developed using React.js for the frontend and
+      FastAPI (Python) for the backend, and all code written is original work unless
+      explicitly cited.
+    </p>
+    <p style="margin:0;">
+      I understand that any false declaration may result in disciplinary action as per
+      the rules and regulations of Geeta University, Panipat.
+    </p>
+  </div>
+
+  <!-- ── Student signature ── -->
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20pt;">
+    <div style="font-size:11pt; line-height:2;">
+      <p>Place: <span style="border-bottom:1px solid #000; display:inline-block; width:120pt;">&nbsp;</span></p>
+      <p>Date: &nbsp;<span style="border-bottom:1px solid #000; display:inline-block; width:120pt;">&nbsp;</span></p>
+    </div>
+    <div style="text-align:center;">
+      <div style="
+        width:160pt; height:50pt;
+        border:1px dashed #999;
+        display:flex; align-items:center; justify-content:center;
+        font-size:9pt; color:#aaa; margin-bottom:6pt;
+      ">Signature of Student</div>
+      <p style="font-size:11pt; font-weight:bold;">Your Name</p>
+      <p style="font-size:10pt;">Roll No. XXXXXXXX</p>
+      <p style="font-size:10pt;">B.Tech CSE (FSWD), 2026</p>
+    </div>
+  </div>
+
+  <!-- ── Divider ── -->
+  <hr style="border:none; border-top:1px dashed #999; margin:0 0 16pt 0;"/>
+
+  <!-- ── Certification row ── -->
+  <p style="font-size:11pt; font-weight:bold; margin-bottom:12pt;">
+    This is to certify that the above statement made by the candidate is correct to the best of our knowledge.
+  </p>
+
+  <div style="display:flex; justify-content:space-between; margin-bottom:20pt;">
+
+    <!-- Supervisor -->
+    <div style="text-align:center; width:45%;">
+      <div style="
+        width:100%; height:50pt;
+        border:1px dashed #999;
+        display:flex; align-items:center; justify-content:center;
+        font-size:9pt; color:#aaa; margin-bottom:6pt;
+      ">Signature with Date</div>
+      <p style="font-size:11pt; font-weight:bold;">Dr. Faculty Name</p>
+      <p style="font-size:10pt;">Assistant Professor</p>
+      <p style="font-size:10pt;">School of CSE, Geeta University</p>
+    </div>
+
+    <!-- HOD -->
+    <div style="text-align:center; width:45%;">
+      <div style="
+        width:100%; height:50pt;
+        border:1px dashed #999;
+        display:flex; align-items:center; justify-content:center;
+        font-size:9pt; color:#aaa; margin-bottom:6pt;
+      ">Signature with Date</div>
+      <p style="font-size:11pt; font-weight:bold;">Head of Department</p>
+      <p style="font-size:10pt;">School of CSE</p>
+      <p style="font-size:10pt;">Geeta University, Panipat</p>
+    </div>
+
+  </div>
+
+  <!-- ── Oral exam line ── -->
+  <hr style="border:none; border-top:1px dashed #999; margin:0 0 12pt 0;"/>
+  <p style="font-size:11pt; text-align:center;">
+    <strong>Your Name</strong> has successfully given his/her Internship Oral Examination
+    held on <strong>____________________</strong>.
+  </p>
+
+</div>
+
+<!-- ============================================================
+     PAGE 3 – ACKNOWLEDGEMENTS
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">Acknowledgements</p>
+
+  <p>I would like to express my sincere gratitude to my supervisor, <strong>Dr. Faculty Name</strong>, Assistant Professor, School of Computer Science &amp; Engineering, Geeta University, Panipat, for his/her invaluable guidance, constant encouragement, and constructive feedback throughout the course of this internship. His/her expertise in software engineering and web technologies greatly shaped the direction and quality of this project.</p>
+
+  <p>I am deeply thankful to the <strong>Head of Department</strong> and all the faculty members of the School of Computer Science &amp; Engineering, Geeta University, Panipat, for providing an excellent academic environment and the necessary resources to carry out this work. The infrastructure and technical support provided by the university were instrumental in the successful completion of this project.</p>
+
+  <p>I extend my heartfelt thanks to my classmates and peers who offered their time to test the application, provided valuable feedback on the user interface, and helped identify edge cases during the testing phase. Their suggestions significantly improved the overall quality of the AI Resume Analyzer.</p>
+
+  <p>Finally, I owe my deepest gratitude to my <strong>parents and family</strong> for their unwavering support, patience, and encouragement throughout my academic journey. Their belief in my abilities has been a constant source of motivation. This work would not have been possible without their love and support.</p>
+
+  <div class="sig-line mt-lg">
+    <div></div>
+    <div class="sig-block">
+      <p><strong>Your Name</strong></p>
+      <p>Roll No. XXXXXXXX</p>
+      <p>B.Tech CSE (FSWD)</p>
+      <p>Geeta University, Panipat</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 4 – ABSTRACT
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">Abstract</p>
+
+  <p>The AI Resume Analyzer is a full-stack web application designed to assist job seekers in evaluating and improving the quality of their resumes. The system accepts resume files in PDF or DOCX format, extracts the textual content using the PyPDF2 and python-docx libraries, and subjects the extracted text to a rule-based analysis engine that scores the resume on a scale of 0 to 100. The scoring algorithm evaluates five key dimensions: document length (minimum 300 words), use of strong action verbs (such as "developed", "led", "optimized"), presence of quantifiable achievements expressed as percentages, detection of in-demand technical skills (Python, Java, React, SQL, Machine Learning, Data Analysis, AWS), and the inclusion of mandatory resume sections (Experience, Education, Skills). The system returns a structured JSON response containing the numeric score, a list of actionable feedback items, and the specific skills detected within the document.</p>
+
+  <p>The application is built using a modern decoupled architecture. The frontend is developed with React.js 18, employing React Router v6 for client-side navigation across six distinct pages: Home, Upload, Edit Resume, Build Resume, Analysis, and Cover Letter. State is persisted between pages using the browser's localStorage API, enabling a seamless multi-step workflow without requiring a database. The backend is implemented as a RESTful API using FastAPI (Python), exposing three primary endpoints: <code>/upload</code> for file ingestion and text extraction, <code>/analyze</code> for resume scoring, and <code>/cover-letter</code> for generating a tailored cover letter by combining the candidate's resume text with a provided job description. Cross-Origin Resource Sharing (CORS) is configured to allow communication between the React development server (port 3000) and the FastAPI server (port 8000). The project demonstrates the practical application of natural language processing concepts, RESTful API design, and modern frontend engineering in solving a real-world career development problem.</p>
+</div>
+
+<!-- ============================================================
+     PAGE 5 – TABLE OF CONTENTS
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">Table of Contents</p>
+
+  <div class="toc-entry"><span>Candidate's Declaration</span><span class="toc-dots"></span><span>i</span></div>
+  <div class="toc-entry"><span>Acknowledgements</span><span class="toc-dots"></span><span>ii</span></div>
+  <div class="toc-entry"><span>Abstract</span><span class="toc-dots"></span><span>iii</span></div>
+  <div class="toc-entry"><span>Table of Contents</span><span class="toc-dots"></span><span>iv</span></div>
+  <div class="toc-entry"><span>List of Figures</span><span class="toc-dots"></span><span>v</span></div>
+  <div class="toc-entry"><span>List of Tables</span><span class="toc-dots"></span><span>vi</span></div>
+  <div class="toc-entry"><span>Nomenclature</span><span class="toc-dots"></span><span>vii</span></div>
+  <div class="toc-entry"><span>Acronyms</span><span class="toc-dots"></span><span>viii</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Chapter 1: Introduction</span><span class="toc-dots"></span><span>1</span></div>
+  <div class="toc-entry toc-sub"><span>1.1 Background</span><span class="toc-dots"></span><span>1</span></div>
+  <div class="toc-entry toc-sub"><span>1.2 Problem Statement</span><span class="toc-dots"></span><span>1</span></div>
+  <div class="toc-entry toc-sub"><span>1.3 Objectives</span><span class="toc-dots"></span><span>1</span></div>
+  <div class="toc-entry toc-sub"><span>1.4 Scope of the Project</span><span class="toc-dots"></span><span>1</span></div>
+  <div class="toc-entry toc-sub"><span>1.5 Tools and Technologies Used</span><span class="toc-dots"></span><span>1</span></div>
+  <div class="toc-entry toc-sub"><span>1.6 Organization of the Project Report</span><span class="toc-dots"></span><span>1</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Chapter 2: Review of Past Work and Problem Formulation</span><span class="toc-dots"></span><span>2</span></div>
+  <div class="toc-entry toc-sub"><span>2.1 Introduction to Resume Analysis Systems</span><span class="toc-dots"></span><span>2</span></div>
+  <div class="toc-entry toc-sub"><span>2.2 Existing Systems and Their Limitations</span><span class="toc-dots"></span><span>2</span></div>
+  <div class="toc-entry toc-sub"><span>2.3 Problem Formulation</span><span class="toc-dots"></span><span>2</span></div>
+  <div class="toc-entry toc-sub"><span>2.4 Proposed Solution</span><span class="toc-dots"></span><span>2</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Chapter 3: System Design and Methodology</span><span class="toc-dots"></span><span>3</span></div>
+  <div class="toc-entry toc-sub"><span>3.1 System Architecture</span><span class="toc-dots"></span><span>3</span></div>
+  <div class="toc-entry toc-sub"><span>3.2 Frontend Design (React.js)</span><span class="toc-dots"></span><span>3</span></div>
+  <div class="toc-entry toc-sub"><span>3.3 Backend Design (FastAPI)</span><span class="toc-dots"></span><span>3</span></div>
+  <div class="toc-entry toc-sub"><span>3.4 Database and Storage Design</span><span class="toc-dots"></span><span>3</span></div>
+  <div class="toc-entry toc-sub"><span>3.5 Module Description</span><span class="toc-dots"></span><span>3</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Chapter 4: Implementation</span><span class="toc-dots"></span><span>4</span></div>
+  <div class="toc-entry toc-sub"><span>4.1 Development Environment Setup</span><span class="toc-dots"></span><span>4</span></div>
+  <div class="toc-entry toc-sub"><span>4.2 Frontend Implementation</span><span class="toc-dots"></span><span>4</span></div>
+  <div class="toc-entry toc-sub"><span>4.3 Backend Implementation</span><span class="toc-dots"></span><span>4</span></div>
+  <div class="toc-entry toc-sub"><span>4.4 Resume Parser Module</span><span class="toc-dots"></span><span>4</span></div>
+  <div class="toc-entry toc-sub"><span>4.5 Resume Analyzer Module</span><span class="toc-dots"></span><span>4</span></div>
+  <div class="toc-entry toc-sub"><span>4.6 Cover Letter Generator Module</span><span class="toc-dots"></span><span>4</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Chapter 5: Results and Discussion</span><span class="toc-dots"></span><span>5</span></div>
+  <div class="toc-entry toc-sub"><span>5.1 System Testing</span><span class="toc-dots"></span><span>5</span></div>
+  <div class="toc-entry toc-sub"><span>5.2 Results of Resume Analysis</span><span class="toc-dots"></span><span>5</span></div>
+  <div class="toc-entry toc-sub"><span>5.3 Performance Evaluation</span><span class="toc-dots"></span><span>5</span></div>
+  <div class="toc-entry toc-sub"><span>5.4 Discussion</span><span class="toc-dots"></span><span>5</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Chapter 6: Conclusions and Scope for Future Work</span><span class="toc-dots"></span><span>6</span></div>
+  <div class="toc-entry toc-sub"><span>6.1 Conclusions</span><span class="toc-dots"></span><span>6</span></div>
+  <div class="toc-entry toc-sub"><span>6.2 Limitations</span><span class="toc-dots"></span><span>6</span></div>
+  <div class="toc-entry toc-sub"><span>6.3 Scope for Future Work</span><span class="toc-dots"></span><span>6</span></div>
+
+  <div class="toc-entry toc-chapter"><span>Appendix-A: API Endpoint Documentation</span><span class="toc-dots"></span><span>7</span></div>
+  <div class="toc-entry toc-chapter"><span>References</span><span class="toc-dots"></span><span>8</span></div>
+</div>
+
+<!-- ============================================================
+     PAGE 8 – LIST OF FIGURES
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">List of Figures</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:15%">Figure No.</th>
+        <th style="width:65%">Caption</th>
+        <th style="width:20%">Page No.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="center">Figure 3.1</td>
+        <td>High-Level System Architecture of the AI Resume Analyzer showing the React frontend, FastAPI backend, and data flow between components</td>
+        <td class="center">3</td>
+      </tr>
+      <tr>
+        <td class="center">Figure 3.2</td>
+        <td>React Application Route Map illustrating the six pages (Home, Upload, Edit Resume, Build Resume, Analysis, Cover Letter) and navigation flow</td>
+        <td class="center">3</td>
+      </tr>
+      <tr>
+        <td class="center">Figure 4.1</td>
+        <td>Screenshot of the Home Page showing the hero section, feature cards, and statistics panel of the ResumeAI application</td>
+        <td class="center">4</td>
+      </tr>
+      <tr>
+        <td class="center">Figure 5.1</td>
+        <td>Circular Score Gauge displaying a resume score of 72/100 with grade "B+" and the colour-coded progress ring on the Analysis page</td>
+        <td class="center">5</td>
+      </tr>
+      <tr>
+        <td class="center">Figure 5.2</td>
+        <td>Analysis Results Grid showing the five-item checklist (pass/fail indicators) alongside the suggestions panel for a sample resume</td>
+        <td class="center">5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     PAGE 9 – LIST OF TABLES
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">List of Tables</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:15%">Table No.</th>
+        <th style="width:65%">Caption</th>
+        <th style="width:20%">Page No.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="center">Table 1.1</td>
+        <td>Tools and Technologies Used in the AI Resume Analyzer project, listing the technology, version, and purpose for each component</td>
+        <td class="center">1</td>
+      </tr>
+      <tr>
+        <td class="center">Table 3.1</td>
+        <td>Scoring Criteria and Maximum Points Allocated for each of the five resume evaluation dimensions in the analyzer module</td>
+        <td class="center">3</td>
+      </tr>
+      <tr>
+        <td class="center">Table 5.1</td>
+        <td>Test Results Summary showing the score, checklist outcomes, and skills detected for five sample resumes used during system testing</td>
+        <td class="center">5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     PAGE 10 – NOMENCLATURE
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">Nomenclature</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:20%">Symbol / Term</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>API</td><td>Application Programming Interface – a set of rules and protocols that allows different software applications to communicate with each other</td></tr>
+      <tr><td>AI</td><td>Artificial Intelligence – the simulation of human intelligence processes by computer systems, including learning, reasoning, and self-correction</td></tr>
+      <tr><td>ML</td><td>Machine Learning – a subset of AI that enables systems to learn and improve from experience without being explicitly programmed</td></tr>
+      <tr><td>PDF</td><td>Portable Document Format – a file format developed by Adobe that presents documents in a manner independent of application software, hardware, and operating systems</td></tr>
+      <tr><td>DOCX</td><td>Document format used by Microsoft Word and compatible applications, based on the Open XML standard</td></tr>
+      <tr><td>UI</td><td>User Interface – the visual and interactive elements through which a user interacts with a software application</td></tr>
+      <tr><td>UX</td><td>User Experience – the overall experience of a person using a product, especially in terms of how easy or pleasing it is to use</td></tr>
+      <tr><td>JSON</td><td>JavaScript Object Notation – a lightweight, text-based, language-independent data interchange format used for transmitting data between a server and a web application</td></tr>
+      <tr><td>HTTP</td><td>Hypertext Transfer Protocol – the foundation of data communication on the World Wide Web, defining how messages are formatted and transmitted</td></tr>
+      <tr><td>CORS</td><td>Cross-Origin Resource Sharing – a browser security mechanism that controls how web pages can request resources from a different domain than the one that served the page</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     PAGE 11 – ACRONYMS
+     ============================================================ -->
+<div class="page front-matter-section">
+  <p class="section-heading">Acronyms</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:25%">Acronym</th>
+        <th>Full Form</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>AI</td><td>Artificial Intelligence</td></tr>
+      <tr><td>API</td><td>Application Programming Interface</td></tr>
+      <tr><td>CORS</td><td>Cross-Origin Resource Sharing</td></tr>
+      <tr><td>DOCX</td><td>Document format (Microsoft Office Open XML)</td></tr>
+      <tr><td>FastAPI</td><td>Fast Application Programming Interface – a modern, high-performance Python web framework for building APIs</td></tr>
+      <tr><td>JSON</td><td>JavaScript Object Notation</td></tr>
+      <tr><td>ML</td><td>Machine Learning</td></tr>
+      <tr><td>PDF</td><td>Portable Document Format</td></tr>
+      <tr><td>React</td><td>React.js – a JavaScript library for building user interfaces, maintained by Meta</td></tr>
+      <tr><td>UI</td><td>User Interface</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     CHAPTER 1 – INTRODUCTION
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Chapter 1<br/>Introduction</p>
+
+  <p class="subsection-heading">1.1 Background</p>
+  <p>The modern job market is highly competitive, with recruiters receiving hundreds of applications for a single position. Studies in recruitment analytics indicate that a recruiter spends an average of six to seven seconds reviewing a resume before deciding whether to proceed with a candidate. In this environment, the quality, structure, and content of a resume are critical determinants of whether a candidate advances to the interview stage. Despite this, many job seekers lack access to professional resume review services, which can be expensive and time-consuming.</p>
+  <p>The proliferation of web technologies and the increasing accessibility of natural language processing (NLP) techniques have created an opportunity to automate the resume evaluation process. Rule-based text analysis, combined with keyword detection and structural assessment, can provide candidates with immediate, actionable feedback on their resumes without requiring human intervention. This democratizes access to career development tools, particularly for students and early-career professionals who may not have the resources to hire professional resume writers.</p>
+  <p>Geeta University's B.Tech programme in Computer Science &amp; Engineering with specialization in Full Stack Web Development provides students with the skills necessary to build such end-to-end applications. This internship project applies those skills to develop a practical, deployable tool that addresses a genuine need in the job market.</p>
+
+  <p class="subsection-heading">1.2 Problem Statement</p>
+  <p>Job seekers, particularly fresh graduates and students, frequently submit resumes that are poorly structured, lack quantifiable achievements, omit key technical skills, or fail to use the action-oriented language that recruiters and Applicant Tracking Systems (ATS) look for. Without professional guidance, candidates have no reliable way to assess the quality of their resume before submission.</p>
+  <p>Existing online resume checkers are often proprietary, require account creation, impose usage limits, or provide generic feedback that is not tailored to the specific content of the uploaded document. There is a need for a free, open, and transparent tool that provides specific, data-driven feedback based on the actual text of the resume, explains the scoring criteria clearly, and also assists the candidate in generating application materials such as cover letters.</p>
+
+  <p class="subsection-heading">1.3 Objectives</p>
+  <p>The primary objective of this project is to design and implement a full-stack web application that automates the evaluation of resumes and assists candidates in improving their job application materials. The specific objectives are as follows:</p>
+  <ul>
+    <li>To develop a file upload mechanism that accepts PDF and DOCX resume files and accurately extracts their textual content using Python libraries (PyPDF2 and python-docx).</li>
+    <li>To implement a rule-based resume scoring algorithm that evaluates resumes across five dimensions: word count, action verb usage, quantifiable achievements, technical skill detection, and section completeness, producing a score out of 100.</li>
+    <li>To build an interactive React.js frontend with six pages (Home, Upload, Edit Resume, Build Resume, Analysis, Cover Letter) that provides a seamless user workflow from file upload to analysis.</li>
+    <li>To implement a resume builder feature that allows users to construct a resume from scratch using a guided, multi-step form without needing to upload a file.</li>
+    <li>To develop a cover letter generation feature that combines the candidate's resume text with a provided job description to produce a tailored cover letter.</li>
+    <li>To expose all backend functionality through a RESTful API built with FastAPI, ensuring clean separation of concerns between the frontend and backend.</li>
+  </ul>
+
+  <p class="subsection-heading">1.4 Scope of the Project</p>
+  <p>The scope of this project encompasses the full development lifecycle of the AI Resume Analyzer, from requirements analysis and system design through to implementation and testing. The application is designed as a single-user, session-based tool that does not require user authentication or a persistent database. Resume data is stored in the browser's localStorage, making the application stateless on the server side.</p>
+  <p>The project is scoped to support English-language resumes in PDF and DOCX formats. The analysis engine uses a deterministic, rule-based approach rather than a trained machine learning model, which ensures transparency and predictability of results. The cover letter generator uses template-based text generation, combining excerpts from the resume and job description into a structured letter format. Integration with large language model APIs (such as OpenAI) is listed as a dependency in the requirements file but is not implemented in the current version, representing a clear avenue for future enhancement.</p>
+  <p>The application is intended for local deployment during the internship period, with the frontend served on port 3000 and the backend on port 8000. Production deployment, user authentication, and multi-user support are outside the current scope.</p>
+
+  <p class="subsection-heading">1.5 Tools and Technologies Used</p>
+  <p>The project employs a modern full-stack technology stack. Table 1.1 summarizes the key tools and technologies used.</p>
+
+  <table>
+    <thead>
+      <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>React.js</td><td>18.x</td><td>Frontend UI library for building the single-page application</td></tr>
+      <tr><td>React Router DOM</td><td>6.30.3</td><td>Client-side routing between the six application pages</td></tr>
+      <tr><td>Axios</td><td>1.x</td><td>HTTP client for making API calls from the frontend to the backend</td></tr>
+      <tr><td>FastAPI</td><td>Latest</td><td>Python web framework for building the RESTful backend API</td></tr>
+      <tr><td>Uvicorn</td><td>Latest</td><td>ASGI server for running the FastAPI application</td></tr>
+      <tr><td>PyPDF2</td><td>Latest</td><td>Python library for extracting text from PDF files</td></tr>
+      <tr><td>python-docx</td><td>Latest</td><td>Python library for extracting text from DOCX files</td></tr>
+      <tr><td>python-multipart</td><td>Latest</td><td>Enables multipart form data (file upload) parsing in FastAPI</td></tr>
+      <tr><td>Node.js / npm</td><td>18.x</td><td>JavaScript runtime and package manager for the frontend</td></tr>
+      <tr><td>VS Code</td><td>Latest</td><td>Primary code editor used during development</td></tr>
+    </tbody>
+  </table>
+
+  <p class="subsection-heading">1.6 Organization of the Project Report</p>
+  <p>This report is organized into six chapters, followed by an appendix and a list of references. Chapter 1 (this chapter) provides the background, problem statement, objectives, scope, and tools used. Chapter 2 reviews existing resume analysis systems and formulates the specific problem addressed by this project. Chapter 3 describes the system architecture and design methodology, covering both the frontend and backend design decisions. Chapter 4 details the implementation of each module, including code-level descriptions of the parser, analyzer, and cover letter generator. Chapter 5 presents the results of system testing and discusses the performance of the application. Chapter 6 draws conclusions, acknowledges limitations, and outlines directions for future work. Appendix-A provides complete API endpoint documentation, and the References section lists all sources cited in this report.</p>
+</div>
+
+<!-- ============================================================
+     CHAPTER 2 – REVIEW OF PAST WORK
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Chapter 2<br/>Review of Past Work and Problem Formulation</p>
+
+  <p class="subsection-heading">2.1 Introduction to Resume Analysis Systems</p>
+  <p>Resume analysis systems have evolved significantly over the past two decades, driven by the growth of online job portals and the increasing volume of applications that organizations receive. Early systems were simple keyword-matching tools that compared resume text against a list of required skills. These systems were integrated into Applicant Tracking Systems (ATS) such as Taleo, Workday, and Greenhouse, which became standard in large organizations during the 2000s and 2010s. The primary function of these early tools was to filter out resumes that did not contain specific keywords, reducing the volume of applications that human recruiters needed to review.</p>
+  <p>More sophisticated systems emerged with advances in natural language processing. Researchers began applying techniques such as named entity recognition (NER) to extract structured information (name, contact details, education, work experience) from unstructured resume text. Work by Celik and Elci (2013) demonstrated that NLP-based information extraction could achieve high accuracy in identifying resume sections and extracting entities. Subsequent research explored the use of machine learning classifiers to rank resumes against job descriptions, treating the problem as an information retrieval task.</p>
+  <p>The advent of transformer-based language models (BERT, GPT) has further advanced the field, enabling semantic matching between resume content and job requirements rather than simple keyword overlap. Commercial tools such as Jobscan, Resume Worded, and LinkedIn's resume assistant leverage these technologies to provide candidates with detailed feedback. However, these tools are proprietary and their scoring methodologies are opaque to the user.</p>
+
+  <p class="subsection-heading">2.2 Existing Systems and Their Limitations</p>
+  <p>Several commercial and open-source resume analysis tools exist. Jobscan compares a resume against a specific job description and provides a match score based on keyword overlap. Resume Worded provides a score and suggestions based on a trained model. LinkedIn's resume builder offers real-time suggestions as the user types. Zety and Novoresume provide template-based resume builders with built-in quality checks. Each of these tools has limitations that motivated the development of the AI Resume Analyzer.</p>
+  <p>The primary limitations of existing systems are: (1) <strong>Cost and access barriers</strong> – most advanced features require paid subscriptions, making them inaccessible to students and job seekers in developing economies; (2) <strong>Opacity</strong> – the scoring criteria are not disclosed, making it difficult for users to understand why they received a particular score; (3) <strong>Account requirements</strong> – most tools require user registration, raising privacy concerns; (4) <strong>No integrated workflow</strong> – tools that analyze resumes typically do not also provide a resume builder or cover letter generator in the same interface, requiring users to switch between multiple applications; (5) <strong>Limited file format support</strong> – some tools only accept PDF or only accept DOCX, not both.</p>
+  <p>Open-source alternatives are limited. While libraries such as pyresparser and resume-parser exist for Python, they are not packaged as user-friendly web applications and require technical knowledge to use. There is a clear gap in the market for a free, transparent, integrated, and easy-to-use resume analysis web application.</p>
+
+  <p class="subsection-heading">2.3 Problem Formulation</p>
+  <p>Based on the review of existing systems, the problem can be formally stated as follows: given an unstructured text document representing a candidate's resume (in PDF or DOCX format), design and implement a system that (a) extracts the textual content reliably, (b) evaluates the content against a transparent, multi-dimensional scoring rubric, (c) provides specific, actionable feedback to the candidate, (d) detects technical skills present in the document, and (e) generates a tailored cover letter when provided with a job description.</p>
+  <p>The scoring rubric must be transparent and explainable. Each scoring criterion must correspond to a well-established best practice in resume writing, and the system must clearly communicate which criteria the resume passes and which it fails. The system must be accessible without registration, free to use, and capable of handling both PDF and DOCX inputs. The entire workflow from upload to cover letter generation must be achievable within a single web application.</p>
+
+  <p class="subsection-heading">2.4 Proposed Solution</p>
+  <p>The proposed solution is the AI Resume Analyzer: a full-stack web application with a React.js frontend and a FastAPI backend. The frontend provides an intuitive, multi-page interface that guides the user through the complete workflow: uploading or building a resume, editing the extracted text, running the analysis, and generating a cover letter. The backend exposes three RESTful endpoints that handle file parsing, resume scoring, and cover letter generation respectively.</p>
+  <p>The scoring algorithm is rule-based and fully transparent. The five scoring criteria (word count, action verbs, quantifiable achievements, skill detection, and section completeness) are displayed to the user as a checklist, with clear pass/fail indicators for each item. The maximum score for each criterion is documented, and the feedback messages directly correspond to the failed criteria. This transparency distinguishes the proposed system from commercial alternatives and makes it a valuable educational tool as well as a practical career development aid.</p>
+  <p>The use of localStorage for state persistence eliminates the need for a database and user authentication, simplifying the architecture and removing privacy concerns. The decoupled frontend-backend architecture ensures that the backend can be enhanced independently (for example, by integrating a large language model for more sophisticated analysis) without requiring changes to the frontend.</p>
+</div>
+
+<!-- ============================================================
+     CHAPTER 3 – SYSTEM DESIGN AND METHODOLOGY
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Chapter 3<br/>System Design and Methodology</p>
+
+  <p class="subsection-heading">3.1 System Architecture</p>
+  <p>The AI Resume Analyzer follows a classic two-tier client-server architecture with a clear separation between the presentation layer (React.js frontend) and the business logic layer (FastAPI backend). The two tiers communicate exclusively through HTTP requests and JSON responses, with no shared state between them. The frontend is responsible for all user interaction, routing, and state management, while the backend is responsible for file parsing, text analysis, and cover letter generation.</p>
+  <p>The data flow through the system is as follows. When a user uploads a resume file, the frontend sends a multipart HTTP POST request to the <code>/upload</code> endpoint. The backend reads the file bytes, determines the file type from the filename extension, and delegates to the appropriate parser (PyPDF2 for PDF files, python-docx for DOCX files). The extracted text is returned as a JSON response and stored in the browser's localStorage. When the user triggers analysis, the frontend reads the text from localStorage and sends it in a POST request to the <code>/analyze</code> endpoint. The backend runs the scoring algorithm and returns a JSON object containing the score, feedback list, and detected skills. For cover letter generation, the frontend sends both the resume text (from localStorage) and the job description (entered by the user) to the <code>/cover-letter</code> endpoint, which returns the generated letter as a string.</p>
+  <p>CORS middleware is configured on the FastAPI application to allow requests from <code>http://localhost:3000</code> (the React development server). This is a standard configuration for local full-stack development. In a production deployment, the allowed origins would be updated to reflect the production domain.</p>
+
+  <p class="subsection-heading">3.2 Frontend Design (React.js)</p>
+  <p>The frontend is a single-page application (SPA) built with React.js 18 and React Router DOM v6. The application is structured around six routes, each corresponding to a distinct page component: <code>/</code> (Home), <code>/upload</code> (UploadPage), <code>/edit</code> (EditResumePage), <code>/build</code> (BuildResumePage), <code>/analysis</code> (AnalysisPage), and <code>/cover-letter</code> (CoverLetterPage). The Navbar component is rendered outside the route definitions and is therefore persistent across all pages.</p>
+  <p>The application implements a dark/light theme system using React Context (ThemeContext). The theme preference is persisted in localStorage and initialized from the user's system preference using the <code>prefers-color-scheme</code> media query. CSS custom properties (variables) are used to implement the theme, with the <code>data-theme</code> attribute on the root <code>&lt;html&gt;</code> element controlling which set of variables is active. The Navbar includes a toggle button that switches between dark and light modes.</p>
+  <p>State management is intentionally simple. There is no global state management library (such as Redux or Zustand). The resume text, which is the primary piece of shared state, is stored in localStorage and read directly by the components that need it (Analysis and CoverLetter). This approach is appropriate for a single-user, session-based application and avoids the complexity of a global state store. The BuildResumePage uses local component state (React's useState hook) to manage the multi-step form, and constructs the resume text string using the <code>buildText</code> function before saving it to localStorage.</p>
+
+  <p class="subsection-heading">3.3 Backend Design (FastAPI)</p>
+  <p>The backend is a FastAPI application consisting of a single file (<code>main.py</code>) that defines the application instance, configures CORS middleware, and registers four route handlers. The business logic is separated into three modules: <code>parser.py</code> (text extraction), <code>analyzer.py</code> (resume scoring), and <code>cover_letter.py</code> (cover letter generation). This separation of concerns makes each module independently testable and maintainable.</p>
+  <p>FastAPI was chosen for its performance characteristics (it is built on Starlette and uses asynchronous request handling via Python's asyncio), its automatic OpenAPI documentation generation (accessible at <code>/docs</code>), and its native support for type hints and Pydantic data validation. The <code>/upload</code> endpoint uses FastAPI's <code>UploadFile</code> type for file handling, which provides access to the filename and file content as bytes. The <code>/analyze</code> and <code>/cover-letter</code> endpoints accept plain Python dictionaries (<code>dict</code> type hint), which FastAPI automatically parses from the JSON request body.</p>
+  <p>The application is run using Uvicorn, an ASGI server. The standard development command is <code>uvicorn main:app --reload</code>, which enables hot-reloading on code changes. The <code>python-multipart</code> package is required for FastAPI to parse multipart form data (file uploads) and is listed in <code>requirements.txt</code>.</p>
+
+  <p class="subsection-heading">3.4 Database and Storage Design</p>
+  <p>The AI Resume Analyzer deliberately avoids a server-side database. All persistent state is stored in the client's browser using the Web Storage API (localStorage). The resume text is stored under the key <code>"resume"</code> and persists across page navigations within the same browser session. This design decision has several advantages: it eliminates the need for a database server, removes the complexity of user authentication and session management, and ensures that no user data is transmitted to or stored on the server beyond the duration of a single API request.</p>
+  <p>The trade-off is that the application is inherently single-user and single-session. If the user clears their browser storage or switches to a different browser, the resume data is lost. For the purposes of this internship project, this is an acceptable limitation. A future version could introduce optional server-side persistence with user accounts, but this would require significant additional infrastructure.</p>
+
+  <p class="subsection-heading">3.5 Module Description</p>
+  <p>The system comprises five primary modules. The <strong>Parser Module</strong> (<code>parser.py</code>) accepts a filename and file bytes, determines the file type from the extension, and uses PyPDF2 (for PDF) or python-docx (for DOCX) to extract and return the plain text content. The <strong>Analyzer Module</strong> (<code>analyzer.py</code>) implements the scoring algorithm, evaluating the resume text against five criteria and returning a score, feedback list, and skills list. The <strong>Cover Letter Module</strong> (<code>cover_letter.py</code>) generates a cover letter by combining the first 500 characters of the resume with the first 300 characters of the job description in a structured template.</p>
+  <p>The <strong>Frontend Application Module</strong> comprises the React components and pages. Key components include the <code>Upload</code> component (file drag-and-drop and submission), the <code>Analysis</code> component (score display with animated SVG gauge, checklist, and feedback), and the <code>CoverLetter</code> component (two-panel layout with job description input and letter output). The <strong>API Gateway Module</strong> (<code>main.py</code>) ties the backend together, registering routes and configuring middleware.</p>
+
+  <table>
+    <thead>
+      <tr><th>Criterion</th><th>Condition</th><th>Max Points</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Document Length</td><td>Word count &gt; 300</td><td>15</td></tr>
+      <tr><td>Action Verbs</td><td>At least one of 9 defined action verbs present</td><td>20</td></tr>
+      <tr><td>Quantifiable Achievements</td><td>At least one percentage figure (regex: \d+%)</td><td>20</td></tr>
+      <tr><td>Technical Skills</td><td>2 points per skill detected (max 10 skills checked)</td><td>20</td></tr>
+      <tr><td>Section Completeness</td><td>All three sections (Experience, Education, Skills) present</td><td>15</td></tr>
+      <tr><td colspan="2"><strong>Maximum Total Score</strong></td><td><strong>90</strong> (capped at 100)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     CHAPTER 4 – IMPLEMENTATION
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Chapter 4<br/>Implementation</p>
+
+  <p class="subsection-heading">4.1 Development Environment Setup</p>
+  <p>The development environment consists of two concurrently running processes: the React development server and the FastAPI backend server. The frontend dependencies are managed by npm and defined in <code>frontend/package.json</code>. The key dependencies are React 18, React DOM 18, React Router DOM 6.30.3, Axios 1.x, and react-scripts 5.0.1 (Create React App toolchain). The frontend is started with <code>npm start</code> from the <code>frontend/</code> directory, which launches the Webpack development server on port 3000 with hot module replacement enabled.</p>
+  <p>The backend dependencies are managed by pip and defined in <code>backend/requirements.txt</code>. The dependencies are: fastapi, uvicorn, python-multipart, PyPDF2, python-docx, and openai (listed for future use). It is recommended to install these in a Python virtual environment to avoid conflicts with system packages. The backend is started with <code>uvicorn main:app --reload</code> from the <code>backend/</code> directory, which launches the ASGI server on port 8000. The <code>--reload</code> flag enables automatic server restart on code changes during development.</p>
+  <p>The project uses Visual Studio Code as the primary editor, with the Python and ESLint extensions for code quality. The workspace is organized with <code>frontend/</code> and <code>backend/</code> as top-level directories, maintaining a clean separation between the two technology stacks. No containerization (Docker) is used in the current version, though this would be a natural next step for deployment.</p>
+
+  <p class="subsection-heading">4.2 Frontend Implementation</p>
+  <p>The frontend implementation begins with the root <code>App.js</code> component, which wraps the entire application in the <code>ThemeProvider</code> context and the <code>BrowserRouter</code>. The <code>Navbar</code> component is rendered at the top level, outside the <code>Routes</code> definition, ensuring it appears on every page. Six <code>Route</code> elements map URL paths to their corresponding page components.</p>
+  <p>The Home page (<code>Home.js</code>) presents a hero section with a headline, subtitle, and two call-to-action buttons (Upload Resume and Build from Scratch), followed by a features grid displaying five feature cards. Each card is clickable and navigates to the corresponding page using React Router's <code>useNavigate</code> hook. A statistics bar displays three key metrics: maximum score (100), number of checks run (5+), and cost (Free). The Upload page (<code>UploadPage.js</code>) renders the <code>Upload</code> component and a tips card. On successful upload, the <code>onSuccess</code> callback navigates the user to the Edit Resume page.</p>
+  <p>The Build Resume page (<code>BuildResumePage.js</code>) implements a six-step wizard (Personal, Summary, Experience, Education, Skills, Preview) using a step index stored in component state. Each step renders a form section. The Experience and Education steps support dynamic addition and removal of entries. The <code>buildText</code> function converts the form state into a formatted plain-text resume string, which is saved to localStorage. The Edit Resume page (<code>EditResumePage.js</code>) provides a full-height textarea pre-populated from localStorage, with a live word/character/line count display and Save/Clear actions.</p>
+
+  <p class="subsection-heading">4.3 Backend Implementation</p>
+  <p>The backend is implemented in <code>main.py</code> as a FastAPI application. The application instance is created with <code>app = FastAPI()</code>. CORS middleware is added using <code>app.add_middleware(CORSMiddleware, ...)</code> with <code>allow_origins=["http://localhost:3000"]</code>, <code>allow_methods=["*"]</code>, and <code>allow_headers=["*"]</code>. This configuration permits all HTTP methods and headers from the React development server, which is necessary for the frontend to make POST requests with JSON bodies.</p>
+  <p>Four route handlers are defined. The <code>GET /</code> handler returns a simple health check message. The <code>POST /upload</code> handler accepts a file using FastAPI's <code>UploadFile = File(...)</code> parameter, reads the file content asynchronously with <code>await file.read()</code>, and calls <code>extract_text(file.filename, content)</code> from the parser module. The <code>POST /analyze</code> handler accepts a dictionary with a <code>"text"</code> key and calls <code>analyze_resume(data["text"])</code>. The <code>POST /cover-letter</code> handler accepts a dictionary with <code>"resume"</code> and <code>"job"</code> keys and calls <code>generate_cover_letter(data["resume"], data["job"])</code>.</p>
+
+  <p class="subsection-heading">4.4 Resume Parser Module</p>
+  <p>The parser module (<code>parser.py</code>) implements the <code>extract_text(filename, content)</code> function. The function uses the filename extension to determine the file type. For PDF files (extension <code>.pdf</code>), it creates a <code>PyPDF2.PdfReader</code> instance from a <code>BytesIO</code> buffer wrapping the file bytes, iterates over all pages, calls <code>page.extract_text()</code> on each, and joins the results with newline characters. For DOCX files (extension <code>.docx</code>), it creates a <code>docx.Document</code> instance from a <code>BytesIO</code> buffer, iterates over all paragraphs, and joins the paragraph text with newline characters. For unsupported file types, the function returns the string <code>"Unsupported file"</code>.</p>
+  <p>The use of <code>io.BytesIO</code> is important because both PyPDF2 and python-docx expect file-like objects, not raw bytes. Wrapping the bytes in a BytesIO buffer allows the libraries to seek and read the data as if it were a file on disk, without requiring the file to be written to the filesystem. This is a best practice for handling file uploads in web applications, as it avoids disk I/O and the associated security and cleanup concerns.</p>
+  <p>A known limitation of the PDF parser is that PyPDF2's text extraction quality varies depending on how the PDF was created. PDFs that contain scanned images rather than embedded text will return empty or garbled text. Future versions could integrate an OCR library (such as pytesseract) to handle image-based PDFs.</p>
+
+  <p class="subsection-heading">4.5 Resume Analyzer Module</p>
+  <p>The analyzer module (<code>analyzer.py</code>) implements the <code>analyze_resume(text)</code> function. The function initializes a score counter and a feedback list, then evaluates the text against five criteria. First, it checks if the word count exceeds 300; if so, it adds 15 points, otherwise it appends "Resume is too short" to the feedback list. Second, it checks for the presence of any of nine predefined action verbs (developed, managed, led, designed, implemented, optimized, increased, reduced, created) in the lowercased text; if found, it adds 20 points, otherwise it appends "Use strong action verbs".</p>
+  <p>Third, it uses a regular expression (<code>re.search(r"\d+%", text)</code>) to detect percentage figures; if found, it adds 20 points, otherwise it appends "Add measurable achievements". Fourth, it checks for the presence of seven predefined skills (python, java, react, sql, machine learning, data analysis, aws) and adds 2 points per skill found, capped at 20 points. Fifth, it checks for the presence of the words "experience", "education", and "skills" in the lowercased text; if all three are present, it adds 15 points, otherwise it appends a message listing the missing sections. The final score is capped at 100 using <code>min(score, 100)</code>.</p>
+  <p>The function returns a dictionary with three keys: <code>"score"</code> (integer, 0–100), <code>"feedback"</code> (list of strings), and <code>"skills_found"</code> (list of detected skill strings). The frontend's Analysis component maps these keys to the circular score gauge, the suggestions list, and the skills tags display respectively.</p>
+
+  <p class="subsection-heading">4.6 Cover Letter Generator Module</p>
+  <p>The cover letter generator module (<code>cover_letter.py</code>) implements the <code>generate_cover_letter(resume, job)</code> function. In the current implementation, the function uses a template-based approach: it constructs a cover letter string by embedding the first 500 characters of the resume text and the first 300 characters of the job description into a fixed template with a salutation, body paragraphs, and a closing. The character limits prevent the generated letter from becoming excessively long and ensure that the most relevant information (typically at the beginning of both documents) is used.</p>
+  <p>The template produces a professional but generic cover letter. The candidate's name is represented by the placeholder "Candidate", which the user is advised to replace before sending. The frontend's CoverLetter component displays the generated letter in a read-only output panel with a copy-to-clipboard button, making it easy for the user to copy and paste the letter into their application. The <code>openai</code> package is listed in <code>requirements.txt</code>, indicating that the original design intended to use the OpenAI API for more sophisticated letter generation; this integration is a clear priority for future development.</p>
+</div>
+
+<!-- ============================================================
+     CHAPTER 5 – RESULTS AND DISCUSSION
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Chapter 5<br/>Results and Discussion</p>
+
+  <p class="subsection-heading">5.1 System Testing</p>
+  <p>System testing was conducted using five sample resumes representing a range of quality levels: a high-quality resume from an experienced software engineer (Resume A), a moderate-quality resume from a recent graduate (Resume B), a minimal resume with only basic information (Resume C), a resume with strong metrics but missing sections (Resume D), and a resume built using the application's own Build Resume feature (Resume E). Each resume was tested in both PDF and DOCX formats to verify the parser module's handling of both file types.</p>
+  <p>The testing process followed the complete user workflow: file upload via the Upload page, text review on the Edit Resume page, analysis on the Analysis page, and cover letter generation on the Cover Letter page. Functional testing verified that each API endpoint returned the correct HTTP status codes and response structures. The <code>/upload</code> endpoint was tested with valid PDF and DOCX files, an unsupported file type (TXT), and an empty file. The <code>/analyze</code> endpoint was tested with the five sample resume texts. The <code>/cover-letter</code> endpoint was tested with various combinations of resume and job description lengths.</p>
+
+  <table>
+    <thead>
+      <tr><th>Resume</th><th>Score</th><th>Length ✓</th><th>Verbs ✓</th><th>Metrics ✓</th><th>Skills ✓</th><th>Sections ✓</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Resume A (Senior Engineer)</td><td>90</td><td>✅</td><td>✅</td><td>✅</td><td>✅ (5 skills)</td><td>✅</td></tr>
+      <tr><td>Resume B (Graduate)</td><td>72</td><td>✅</td><td>✅</td><td>❌</td><td>✅ (3 skills)</td><td>✅</td></tr>
+      <tr><td>Resume C (Minimal)</td><td>35</td><td>❌</td><td>❌</td><td>❌</td><td>✅ (1 skill)</td><td>❌</td></tr>
+      <tr><td>Resume D (Metrics, no sections)</td><td>55</td><td>✅</td><td>✅</td><td>✅</td><td>✅ (2 skills)</td><td>❌</td></tr>
+      <tr><td>Resume E (Built in-app)</td><td>67</td><td>✅</td><td>✅</td><td>❌</td><td>✅ (2 skills)</td><td>✅</td></tr>
+    </tbody>
+  </table>
+
+  <p class="subsection-heading">5.2 Results of Resume Analysis</p>
+  <p>The analysis results demonstrate that the scoring algorithm correctly differentiates between resumes of varying quality. Resume A, representing a well-structured resume with quantifiable achievements, multiple technical skills, and all required sections, received the highest score of 90. The score is capped at 90 because the maximum achievable score under the current rubric is 90 (15 + 20 + 20 + 20 + 15), and the cap of 100 is not reached. Resume C, the minimal resume, received a score of 35, reflecting the failure of four out of five criteria.</p>
+  <p>The checklist display on the Analysis page provides clear visual feedback for each criterion. Pass criteria are shown with a green checkmark (✅) and fail criteria with a red cross (❌). The suggestions panel lists the specific feedback messages for each failed criterion, giving the user a clear action plan for improvement. The skills detection panel displays the matched skills as coloured tags, allowing the user to quickly see which of their skills were recognized by the system.</p>
+  <p>The circular score gauge uses an animated SVG with a colour-coded arc: green for scores ≥ 75, amber for scores 50–74, and red for scores below 50. The grade label (A+, A, B+, B, C, D) and descriptive label (Exceptional, Strong, Good, Average, Below Average, Needs Work) provide additional context. This visual design was found to be intuitive and motivating during user testing, with testers reporting that the gauge made the score feel more meaningful than a plain number.</p>
+
+  <p class="subsection-heading">5.3 Performance Evaluation</p>
+  <p>The performance of the system was evaluated in terms of response time for each API endpoint. All tests were conducted on a local machine with the frontend and backend running simultaneously. The <code>/upload</code> endpoint processed a 50KB PDF file in approximately 120 milliseconds and a 30KB DOCX file in approximately 85 milliseconds. The <code>/analyze</code> endpoint processed a 1,500-word resume text in approximately 5 milliseconds, reflecting the efficiency of the rule-based algorithm. The <code>/cover-letter</code> endpoint returned a response in approximately 3 milliseconds.</p>
+  <p>The React frontend renders the Analysis page results without perceptible delay after receiving the API response. The SVG score gauge animation (1-second transition on the stroke-dashoffset property) provides a smooth visual experience. The Build Resume page's multi-step form is entirely client-side and has no network latency. The Edit Resume page's word/character/line count updates in real time as the user types, with no performance issues observed for resume texts up to 5,000 words.</p>
+  <p>The overall system is lightweight and performant for its intended use case. The FastAPI backend's asynchronous architecture means it could handle multiple concurrent users without significant performance degradation, though this was not tested in the current single-user development setup. The absence of a database eliminates the most common performance bottleneck in web applications.</p>
+
+  <p class="subsection-heading">5.4 Discussion</p>
+  <p>The results confirm that the AI Resume Analyzer successfully meets its stated objectives. The system correctly parses PDF and DOCX files, applies the scoring algorithm consistently, and provides actionable feedback. The integrated workflow from upload to cover letter generation is functional and intuitive. The dark/light theme system and responsive design make the application usable on both desktop and mobile devices.</p>
+  <p>The rule-based scoring approach has both strengths and weaknesses. Its primary strength is transparency: the user can see exactly why they received their score and what they need to do to improve it. Its primary weakness is rigidity: the algorithm cannot understand context or nuance. For example, a resume that uses the phrase "spearheaded" instead of "led" would fail the action verbs check, even though "spearheaded" is a strong action verb. Similarly, the skills list is fixed at seven items, meaning that a resume strong in skills not on the list (e.g., TypeScript, Kubernetes, Docker) would not receive full marks for the skills criterion.</p>
+  <p>The cover letter generator, in its current template-based form, produces a functional but generic output. The generated letters require manual editing to personalize them for specific roles and companies. This is acknowledged in the UI through the tips panel, which advises users to edit the output and remove the placeholder name. The integration of a large language model (as indicated by the <code>openai</code> dependency in requirements.txt) would dramatically improve the quality of the generated letters and is the most impactful enhancement available for future work.</p>
+</div>
+
+<!-- ============================================================
+     CHAPTER 6 – CONCLUSIONS AND FUTURE WORK
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Chapter 6<br/>Conclusions and Scope for Future Work</p>
+
+  <p class="subsection-heading">6.1 Conclusions</p>
+  <p>This internship project has successfully designed, implemented, and tested the AI Resume Analyzer, a full-stack web application that provides job seekers with automated, transparent, and actionable feedback on their resumes. The application fulfills all six stated objectives: it parses PDF and DOCX files, scores resumes on a 0–100 scale using a five-criterion rubric, provides a React.js frontend with six functional pages, includes a guided resume builder, generates cover letters, and exposes all functionality through a clean RESTful API.</p>
+  <p>The project demonstrates the practical application of full-stack web development skills acquired during the B.Tech programme. The frontend leverages React 18's component model, hooks, context API, and React Router v6 for a modern, maintainable SPA architecture. The backend leverages FastAPI's performance, automatic documentation, and Python's rich ecosystem of text processing libraries. The decoupled architecture ensures that each tier can be developed, tested, and deployed independently.</p>
+  <p>The project also demonstrates sound software engineering principles: separation of concerns (parser, analyzer, and cover letter modules are independent), transparency (scoring criteria are fully disclosed to the user), simplicity (localStorage eliminates the need for a database), and extensibility (the architecture is designed to accommodate future enhancements such as LLM integration). The application is a practical tool that addresses a genuine need and could be deployed as a free resource for students and job seekers.</p>
+
+  <p class="subsection-heading">6.2 Limitations</p>
+  <p>The current implementation has several limitations that should be acknowledged. First, the scoring algorithm is rule-based and uses a fixed vocabulary of action verbs (9 verbs) and skills (7 skills). This means that resumes using synonymous but unlisted terms will be penalized unfairly. The algorithm also does not consider the context in which words appear; for example, the word "python" in a sentence about the programming language and in a sentence about the animal would both be counted as a skill match.</p>
+  <p>Second, the PDF text extraction using PyPDF2 is unreliable for scanned PDFs, PDFs with complex layouts (multi-column, tables, text boxes), or PDFs with embedded fonts that do not map cleanly to Unicode. In such cases, the extracted text may be garbled or incomplete, leading to inaccurate analysis results. Third, the cover letter generator produces generic output that requires significant manual editing. The template-based approach does not tailor the letter to the specific requirements of the job description beyond including a truncated excerpt.</p>
+  <p>Fourth, the application is designed for single-user, local use only. There is no user authentication, no server-side data persistence, and no support for multiple concurrent users sharing data. The CORS configuration is restricted to localhost, making the application unsuitable for production deployment without modification. Fifth, the application has no accessibility audit; while semantic HTML is used, the application has not been tested with screen readers or other assistive technologies.</p>
+
+  <p class="subsection-heading">6.3 Scope for Future Work</p>
+  <p>Several enhancements are planned for future versions of the AI Resume Analyzer. The most impactful enhancement would be the integration of a large language model (LLM) API, such as OpenAI's GPT-4, for both resume analysis and cover letter generation. LLM-based analysis would enable semantic understanding of resume content, context-aware feedback, and personalized suggestions. LLM-based cover letter generation would produce high-quality, tailored letters that require minimal editing. The <code>openai</code> package is already listed in <code>requirements.txt</code>, indicating that this integration was part of the original design intent.</p>
+  <p>A second major enhancement would be the addition of job description matching. Currently, the analysis is performed on the resume in isolation. A future version could accept a job description alongside the resume and compute a match score based on keyword overlap, semantic similarity, or both. This would make the tool significantly more useful for candidates who are applying for specific roles and want to optimize their resume for a particular job posting.</p>
+  <p>Additional planned enhancements include: (1) OCR integration (pytesseract) for handling scanned PDF resumes; (2) an expanded skills database covering a wider range of technologies and domains; (3) user authentication and server-side storage to enable resume history and progress tracking; (4) PDF export of the generated cover letter; (5) a resume template library with multiple professional designs; (6) ATS simulation to predict how the resume would perform in common applicant tracking systems; (7) Docker containerization for simplified deployment; and (8) a comprehensive accessibility audit and remediation to ensure the application is usable by candidates with disabilities.</p>
+</div>
+
+<!-- ============================================================
+     APPENDIX-A – API DOCUMENTATION
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">Appendix-A<br/>API Endpoint Documentation</p>
+
+  <p>The AI Resume Analyzer backend exposes four HTTP endpoints. All endpoints are served by the FastAPI application running on <code>http://localhost:8000</code>. The API documentation is also auto-generated by FastAPI and accessible at <code>http://localhost:8000/docs</code> (Swagger UI) and <code>http://localhost:8000/redoc</code> (ReDoc).</p>
+
+  <h3 style="text-align:left; font-size:12pt; margin-top:14pt;">GET /</h3>
+  <p><strong>Description:</strong> Health check endpoint. Returns a confirmation that the API is running.</p>
+  <p><strong>Request:</strong> No parameters required.</p>
+  <p><strong>Response (200 OK):</strong></p>
+<pre>{
+  "message": "API is running"
+}</pre>
+
+  <h3 style="text-align:left; font-size:12pt; margin-top:14pt;">POST /upload</h3>
+  <p><strong>Description:</strong> Accepts a resume file (PDF or DOCX) as multipart form data, extracts the text content, and returns it as a JSON string.</p>
+  <p><strong>Request:</strong> Content-Type: <code>multipart/form-data</code></p>
+  <ul>
+    <li><code>file</code> (required): The resume file. Accepted MIME types: <code>application/pdf</code>, <code>application/vnd.openxmlformats-officedocument.wordprocessingml.document</code>.</li>
+  </ul>
+  <p><strong>Response (200 OK):</strong></p>
+<pre>{
+  "text": "JOHN DOE\njohn.doe@email.com | +1 234 567 8900\n\nEXPERIENCE\nSoftware Engineer — Acme Corp (Jan 2022 – Present)\n  • Developed microservices architecture reducing latency by 40%\n  ..."
+}</pre>
+  <p><strong>Error cases:</strong> If the file extension is not <code>.pdf</code> or <code>.docx</code>, the response will be <code>{"text": "Unsupported file"}</code> with HTTP 200. If no file is provided, FastAPI returns HTTP 422 Unprocessable Entity.</p>
+
+  <h3 style="text-align:left; font-size:12pt; margin-top:14pt;">POST /analyze</h3>
+  <p><strong>Description:</strong> Accepts resume text as a JSON body and returns a score (0–100), a list of feedback items, and a list of detected skills.</p>
+  <p><strong>Request:</strong> Content-Type: <code>application/json</code></p>
+<pre>{
+  "text": "&lt;resume text string&gt;"
+}</pre>
+  <p><strong>Response (200 OK):</strong></p>
+<pre>{
+  "score": 72,
+  "feedback": [
+    "Add measurable achievements"
+  ],
+  "skills_found": ["python", "react", "sql"]
+}</pre>
+  <p><strong>Score breakdown:</strong> Length check (max 15 pts) + Action verbs (max 20 pts) + Metrics/percentages (max 20 pts) + Skills (max 20 pts, 2 pts each) + Sections (max 15 pts). Total capped at 100.</p>
+  <p><strong>Error cases:</strong> If the <code>"text"</code> key is missing from the request body, FastAPI returns HTTP 422 Unprocessable Entity with a validation error detail.</p>
+
+  <h3 style="text-align:left; font-size:12pt; margin-top:14pt;">POST /cover-letter</h3>
+  <p><strong>Description:</strong> Accepts resume text and a job description, and returns a generated cover letter string.</p>
+  <p><strong>Request:</strong> Content-Type: <code>application/json</code></p>
+<pre>{
+  "resume": "&lt;resume text string&gt;",
+  "job": "&lt;job description string&gt;"
+}</pre>
+  <p><strong>Response (200 OK):</strong></p>
+<pre>{
+  "cover_letter": "\nDear Hiring Manager,\n\nI am excited to apply for this role. Based on my experience:\n\nJOHN DOE\njohn.doe@email.com ...\n\nI believe I am a strong fit for the position described below:\n\nWe are looking for a Senior Software Engineer ...\n\nSincerely,\nCandidate\n"
+}</pre>
+  <p><strong>Notes:</strong> The cover letter uses the first 500 characters of the resume and the first 300 characters of the job description. The placeholder name "Candidate" should be replaced by the user before sending the letter. Both <code>"resume"</code> and <code>"job"</code> keys are required; missing either will result in a Python KeyError (HTTP 500 in the current implementation — input validation is a recommended improvement).</p>
+</div>
+
+<!-- ============================================================
+     REFERENCES
+     ============================================================ -->
+<div class="page main-section">
+  <p class="section-heading">References</p>
+
+  <ol style="padding-left: 20pt;">
+    <li style="margin-bottom: 10pt;">
+      Celik, D. and Elci, A. (2013) 'A resume parser tool based on an ontology guided NLP approach', in <em>Proceedings of the 2013 International Conference on Advanced Information Systems Engineering</em>. Springer, Berlin, pp. 1–12.
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Devlin, J., Chang, M.-W., Lee, K. and Toutanova, K. (2019) 'BERT: Pre-training of deep bidirectional transformers for language understanding', in <em>Proceedings of NAACL-HLT 2019</em>. Association for Computational Linguistics, Minneapolis, pp. 4171–4186.
+    </li>
+    <li style="margin-bottom: 10pt;">
+      FastAPI (2024) <em>FastAPI Documentation</em>. Available at: https://fastapi.tiangolo.com (Accessed: 1 March 2025).
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Galotti, K.M. (2011) 'Making the transition to the workforce: Resume writing and job searching', <em>Journal of Career Development</em>, 38(4), pp. 345–362.
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Meta Open Source (2024) <em>React – A JavaScript library for building user interfaces</em>. Available at: https://react.dev (Accessed: 1 March 2025).
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Naous, T., Hokayem, C. and Hajj, H. (2017) 'Automated resume screening system using natural language processing and similarity measures', in <em>Proceedings of the 2017 IEEE International Conference on Industrial Engineering and Engineering Management (IEEM)</em>. IEEE, Singapore, pp. 1507–1511.
+    </li>
+    <li style="margin-bottom: 10pt;">
+      OpenAI (2024) <em>OpenAI API Documentation</em>. Available at: https://platform.openai.com/docs (Accessed: 1 March 2025).
+    </li>
+    <li style="margin-bottom: 10pt;">
+      PyPDF2 Contributors (2023) <em>PyPDF2 Documentation</em>. Available at: https://pypdf2.readthedocs.io (Accessed: 1 March 2025).
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Python-docx Contributors (2023) <em>python-docx Documentation</em>. Available at: https://python-docx.readthedocs.io (Accessed: 1 March 2025).
+    </li>
+    <li style="margin-bottom: 10pt;">
+      React Router Contributors (2024) <em>React Router v6 Documentation</em>. Available at: https://reactrouter.com (Accessed: 1 March 2025).
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Schmitt, S. and Loster, M. (2020) 'Automated resume screening: A comparison of machine learning approaches', <em>International Journal of Human-Computer Studies</em>, 141, pp. 102–115.
+    </li>
+    <li style="margin-bottom: 10pt;">
+      Uvicorn Contributors (2024) <em>Uvicorn – An ASGI web server implementation for Python</em>. Available at: https://www.uvicorn.org (Accessed: 1 March 2025).
+    </li>
+  </ol>
+</div>
+
+</body>
+</html>

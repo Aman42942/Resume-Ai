@@ -1,0 +1,24 @@
+services:
+  # Backend: FastAPI
+  - type: web
+    name: resume-ai-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # Frontend: React
+  - type: static
+    name: resume-ai-frontend
+    runtime: node
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          name: resume-ai-backend
+          type: web
+          property: host

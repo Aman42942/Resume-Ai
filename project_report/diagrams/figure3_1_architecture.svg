@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="520" viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="#f8f9fc" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" font-size="16" font-weight="bold" fill="#1a1a2e">Figure 3.1 — High-Level System Architecture of the AI Resume Analyzer</text>
+
+  <!-- ── BROWSER BOX ── -->
+  <rect x="30" y="70" width="220" height="380" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="140" y="95" text-anchor="middle" font-size="13" font-weight="bold" fill="#4f46e5">BROWSER</text>
+  <text x="140" y="112" text-anchor="middle" font-size="11" fill="#6b7280">(React.js SPA)</text>
+
+  <!-- Pages inside browser -->
+  <rect x="50" y="125" width="180" height="30" rx="6" fill="#6366f1"/>
+  <text x="140" y="145" text-anchor="middle" font-size="11" fill="white">🏠  Home Page</text>
+
+  <rect x="50" y="163" width="180" height="30" rx="6" fill="#6366f1"/>
+  <text x="140" y="183" text-anchor="middle" font-size="11" fill="white">📄  Upload Page</text>
+
+  <rect x="50" y="201" width="180" height="30" rx="6" fill="#6366f1"/>
+  <text x="140" y="221" text-anchor="middle" font-size="11" fill="white">✏️  Edit Resume</text>
+
+  <rect x="50" y="239" width="180" height="30" rx="6" fill="#6366f1"/>
+  <text x="140" y="259" text-anchor="middle" font-size="11" fill="white">🏗️  Build Resume</text>
+
+  <rect x="50" y="277" width="180" height="30" rx="6" fill="#6366f1"/>
+  <text x="140" y="297" text-anchor="middle" font-size="11" fill="white">🔍  Analysis Page</text>
+
+  <rect x="50" y="315" width="180" height="30" rx="6" fill="#6366f1"/>
+  <text x="140" y="335" text-anchor="middle" font-size="11" fill="white">✉️  Cover Letter</text>
+
+  <!-- localStorage -->
+  <rect x="50" y="360" width="180" height="36" rx="6" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="140" y="376" text-anchor="middle" font-size="10" font-weight="bold" fill="#78350f">localStorage</text>
+  <text x="140" y="390" text-anchor="middle" font-size="10" fill="#78350f">resume text (session)</text>
+
+  <!-- Axios label -->
+  <rect x="50" y="408" width="180" height="28" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="140" y="427" text-anchor="middle" font-size="10" font-weight="bold" fill="#0369a1">Axios HTTP Client</text>
+
+  <!-- ── ARROWS (HTTP) ── -->
+  <!-- Right arrow -->
+  <line x1="252" y1="260" x2="338" y2="260" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="295" y="250" text-anchor="middle" font-size="10" fill="#4f46e5" font-weight="bold">HTTP POST</text>
+  <text x="295" y="263" text-anchor="middle" font-size="9" fill="#6b7280">multipart / JSON</text>
+
+  <!-- Left arrow (response) -->
+  <line x1="338" y1="275" x2="252" y2="275" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="295" y="295" text-anchor="middle" font-size="10" fill="#10b981" font-weight="bold">JSON Response</text>
+
+  <!-- ── FASTAPI BOX ── -->
+  <rect x="340" y="70" width="220" height="380" rx="10" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="450" y="95" text-anchor="middle" font-size="13" font-weight="bold" fill="#059669">FASTAPI SERVER</text>
+  <text x="450" y="112" text-anchor="middle" font-size="11" fill="#6b7280">localhost:8000</text>
+
+  <!-- Endpoints -->
+  <rect x="360" y="125" width="180" height="36" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="450" y="141" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">GET /</text>
+  <text x="450" y="155" text-anchor="middle" font-size="10" fill="#166534">Health Check</text>
+
+  <rect x="360" y="170" width="180" height="36" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="450" y="186" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">POST /upload</text>
+  <text x="450" y="200" text-anchor="middle" font-size="10" fill="#166534">File ingestion &amp; parsing</text>
+
+  <rect x="360" y="215" width="180" height="36" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="450" y="231" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">POST /analyze</text>
+  <text x="450" y="245" text-anchor="middle" font-size="10" fill="#166534">Resume scoring</text>
+
+  <rect x="360" y="260" width="180" height="36" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="450" y="276" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">POST /cover-letter</text>
+  <text x="450" y="290" text-anchor="middle" font-size="10" fill="#166534">Letter generation</text>
+
+  <!-- CORS badge -->
+  <rect x="360" y="310" width="180" height="28" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="450" y="329" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">CORS Middleware</text>
+
+  <!-- Uvicorn badge -->
+  <rect x="360" y="348" width="180" height="28" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="450" y="367" text-anchor="middle" font-size="10" font-weight="bold" fill="#0369a1">Uvicorn ASGI Server</text>
+
+  <!-- python-multipart -->
+  <rect x="360" y="386" width="180" height="28" rx="6" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+  <text x="450" y="405" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b21a8">python-multipart</text>
+
+  <!-- ── ARROWS to modules ── -->
+  <line x1="562" y1="188" x2="648" y2="188" stroke="#6366f1" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="562" y1="233" x2="648" y2="300" stroke="#6366f1" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="562" y1="278" x2="648" y2="390" stroke="#6366f1" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <!-- ── MODULES BOX ── -->
+  <rect x="650" y="70" width="220" height="380" rx="10" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
+  <text x="760" y="95" text-anchor="middle" font-size="13" font-weight="bold" fill="#7e22ce">PYTHON MODULES</text>
+  <text x="760" y="112" text-anchor="middle" font-size="11" fill="#6b7280">Business Logic</text>
+
+  <!-- parser.py -->
+  <rect x="668" y="125" width="184" height="80" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="760" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#5b21b6">parser.py</text>
+  <text x="760" y="165" text-anchor="middle" font-size="10" fill="#6b7280">extract_text(filename, bytes)</text>
+  <rect x="678" y="172" width="80" height="22" rx="4" fill="#7c3aed"/>
+  <text x="718" y="187" text-anchor="middle" font-size="9" fill="white">PyPDF2</text>
+  <rect x="766" y="172" width="76" height="22" rx="4" fill="#7c3aed"/>
+  <text x="804" y="187" text-anchor="middle" font-size="9" fill="white">python-docx</text>
+
+  <!-- analyzer.py -->
+  <rect x="668" y="218" width="184" height="100" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="760" y="238" text-anchor="middle" font-size="11" font-weight="bold" fill="#5b21b6">analyzer.py</text>
+  <text x="760" y="254" text-anchor="middle" font-size="10" fill="#6b7280">analyze_resume(text)</text>
+  <text x="760" y="270" text-anchor="middle" font-size="9" fill="#6b7280">→ score (0–100)</text>
+  <text x="760" y="284" text-anchor="middle" font-size="9" fill="#6b7280">→ feedback [ ]</text>
+  <text x="760" y="298" text-anchor="middle" font-size="9" fill="#6b7280">→ skills_found [ ]</text>
+  <text x="760" y="312" text-anchor="middle" font-size="9" fill="#9333ea">5-criterion rule engine</text>
+
+  <!-- cover_letter.py -->
+  <rect x="668" y="332" width="184" height="80" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="760" y="352" text-anchor="middle" font-size="11" font-weight="bold" fill="#5b21b6">cover_letter.py</text>
+  <text x="760" y="368" text-anchor="middle" font-size="10" fill="#6b7280">generate_cover_letter</text>
+  <text x="760" y="382" text-anchor="middle" font-size="10" fill="#6b7280">(resume, job)</text>
+  <text x="760" y="400" text-anchor="middle" font-size="9" fill="#9333ea">Template-based generation</text>
+
+  <!-- Port labels -->
+  <text x="140" y="470" text-anchor="middle" font-size="11" fill="#6366f1" font-weight="bold">Port 3000</text>
+  <text x="450" y="470" text-anchor="middle" font-size="11" fill="#10b981" font-weight="bold">Port 8000</text>
+  <text x="760" y="470" text-anchor="middle" font-size="11" fill="#9333ea" font-weight="bold">Python Runtime</text>
+
+  <!-- Divider lines -->
+  <line x1="140" y1="458" x2="140" y2="480" stroke="#6366f1" stroke-width="1.5"/>
+  <line x1="450" y1="458" x2="450" y2="480" stroke="#10b981" stroke-width="1.5"/>
+  <line x1="760" y1="458" x2="760" y2="480" stroke="#9333ea" stroke-width="1.5"/>
+
+  <!-- Caption -->
+  <text x="450" y="508" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic">Figure 3.1: Two-tier client-server architecture with React.js frontend (port 3000) communicating via HTTP/JSON with FastAPI backend (port 8000)</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4f46e5"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+  </defs>
+
+</svg>

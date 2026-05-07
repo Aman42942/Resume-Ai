@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="640" viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="900" height="640" fill="#f8f9fc" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="34" text-anchor="middle" font-size="16" font-weight="bold" fill="#1a1a2e">Figure 3.2 — React Application Page Flow and User Journey</text>
+
+  <!-- ── ARROW MARKERS ── -->
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4f46e5"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="arr-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- ══════════════════════════════════════
+       NAVBAR (persistent)
+  ══════════════════════════════════════ -->
+  <rect x="40" y="55" width="820" height="44" rx="8" fill="#1a1a2e"/>
+  <text x="450" y="72" text-anchor="middle" font-size="11" fill="#a5b4fc" font-weight="bold">📋 ResumeAI — Persistent Navigation Bar (all pages)</text>
+  <text x="450" y="88" text-anchor="middle" font-size="10" fill="#64748b">Home · Upload · Edit Resume · Build Resume · Analysis · Cover Letter · 🌙/☀️</text>
+
+  <!-- ══════════════════════════════════════
+       ROW 1 — HOME (centre top)
+  ══════════════════════════════════════ -->
+  <!-- Home box -->
+  <rect x="330" y="125" width="240" height="70" rx="10" fill="#4f46e5" stroke="#312e81" stroke-width="2"/>
+  <text x="450" y="150" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🏠  Home Page</text>
+  <text x="450" y="167" text-anchor="middle" font-size="10" fill="#c7d2fe">Hero · Feature Cards · Stats</text>
+  <text x="450" y="182" text-anchor="middle" font-size="10" fill="#c7d2fe">Route: /</text>
+
+  <!-- ══════════════════════════════════════
+       ROW 2 — UPLOAD (left) and BUILD (right)
+  ══════════════════════════════════════ -->
+  <!-- Arrow: Home → Upload -->
+  <line x1="390" y1="195" x2="230" y2="265" stroke="#4f46e5" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="285" y="238" text-anchor="middle" font-size="10" fill="#4f46e5" font-weight="bold">Upload Resume →</text>
+
+  <!-- Arrow: Home → Build -->
+  <line x1="510" y1="195" x2="670" y2="265" stroke="#4f46e5" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="615" y="238" text-anchor="middle" font-size="10" fill="#4f46e5" font-weight="bold">Build from Scratch →</text>
+
+  <!-- Upload box -->
+  <rect x="60" y="265" width="220" height="80" rx="10" fill="#0f766e" stroke="#134e4a" stroke-width="2"/>
+  <text x="170" y="292" text-anchor="middle" font-size="13" font-weight="bold" fill="white">📄  Upload Page</text>
+  <text x="170" y="309" text-anchor="middle" font-size="10" fill="#99f6e4">Drag &amp; Drop / Browse</text>
+  <text x="170" y="323" text-anchor="middle" font-size="10" fill="#99f6e4">PDF · DOCX → localStorage</text>
+  <text x="170" y="337" text-anchor="middle" font-size="10" fill="#99f6e4">Route: /upload</text>
+
+  <!-- Build box -->
+  <rect x="620" y="265" width="220" height="80" rx="10" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+  <text x="730" y="292" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🏗️  Build Resume</text>
+  <text x="730" y="309" text-anchor="middle" font-size="10" fill="#fde68a">6-Step Wizard Form</text>
+  <text x="730" y="323" text-anchor="middle" font-size="10" fill="#fde68a">Personal→Summary→Exp→Edu</text>
+  <text x="730" y="337" text-anchor="middle" font-size="10" fill="#fde68a">Route: /build</text>
+
+  <!-- ══════════════════════════════════════
+       ROW 3 — EDIT RESUME (centre)
+  ══════════════════════════════════════ -->
+  <!-- Arrow: Upload → Edit -->
+  <line x1="200" y1="345" x2="340" y2="415" stroke="#10b981" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arr-green)"/>
+  <text x="248" y="390" text-anchor="middle" font-size="10" fill="#10b981" font-weight="bold">auto-navigate</text>
+  <text x="248" y="403" text-anchor="middle" font-size="10" fill="#10b981">on success</text>
+
+  <!-- Arrow: Build → Edit (optional) -->
+  <line x1="700" y1="345" x2="560" y2="415" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr-gray)"/>
+  <text x="660" y="390" text-anchor="middle" font-size="10" fill="#9ca3af">optional</text>
+
+  <!-- Edit Resume box -->
+  <rect x="330" y="415" width="240" height="80" rx="10" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="2"/>
+  <text x="450" y="442" text-anchor="middle" font-size="13" font-weight="bold" fill="white">✏️  Edit Resume</text>
+  <text x="450" y="459" text-anchor="middle" font-size="10" fill="#bfdbfe">Monospace Editor</text>
+  <text x="450" y="473" text-anchor="middle" font-size="10" fill="#bfdbfe">Word / Char / Line Count</text>
+  <text x="450" y="487" text-anchor="middle" font-size="10" fill="#bfdbfe">Route: /edit</text>
+
+  <!-- ══════════════════════════════════════
+       ROW 4 — ANALYSIS (centre)
+  ══════════════════════════════════════ -->
+  <!-- Arrow: Edit → Analysis -->
+  <line x1="450" y1="495" x2="450" y2="545" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="480" y="525" text-anchor="start" font-size="10" fill="#4f46e5" font-weight="bold">Analyze →</text>
+
+  <!-- Arrow: Build → Analysis (direct) -->
+  <line x1="730" y1="345" x2="590" y2="545" stroke="#10b981" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arr-green)"/>
+  <text x="700" y="460" text-anchor="middle" font-size="10" fill="#10b981" font-weight="bold">Save &amp; Analyze →</text>
+
+  <!-- Analysis box -->
+  <rect x="330" y="545" width="240" height="80" rx="10" fill="#7c3aed" stroke="#4c1d95" stroke-width="2"/>
+  <text x="450" y="572" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🔍  Analysis Page</text>
+  <text x="450" y="589" text-anchor="middle" font-size="10" fill="#ddd6fe">Score Gauge · Checklist</text>
+  <text x="450" y="603" text-anchor="middle" font-size="10" fill="#ddd6fe">Suggestions · Skills Tags</text>
+  <text x="450" y="617" text-anchor="middle" font-size="10" fill="#ddd6fe">Route: /analysis</text>
+
+  <!-- ══════════════════════════════════════
+       ROW 5 — COVER LETTER (right of analysis)
+  ══════════════════════════════════════ -->
+  <!-- Arrow: Analysis → Cover Letter -->
+  <line x1="570" y1="585" x2="648" y2="585" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-green)"/>
+  <text x="609" y="575" text-anchor="middle" font-size="10" fill="#10b981" font-weight="bold">Generate →</text>
+
+  <!-- Cover Letter box -->
+  <rect x="650" y="545" width="210" height="80" rx="10" fill="#0f766e" stroke="#134e4a" stroke-width="2"/>
+  <text x="755" y="572" text-anchor="middle" font-size="13" font-weight="bold" fill="white">✉️  Cover Letter</text>
+  <text x="755" y="589" text-anchor="middle" font-size="10" fill="#99f6e4">Job Description Input</text>
+  <text x="755" y="603" text-anchor="middle" font-size="10" fill="#99f6e4">Generated Letter + Copy</text>
+  <text x="755" y="617" text-anchor="middle" font-size="10" fill="#99f6e4">Route: /cover-letter</text>
+
+  <!-- ══════════════════════════════════════
+       LEGEND
+  ══════════════════════════════════════ -->
+  <rect x="40" y="545" width="240" height="80" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+  <text x="160" y="565" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">Legend</text>
+
+  <line x1="58" y1="580" x2="100" y2="580" stroke="#4f46e5" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="110" y="584" font-size="10" fill="#374151">Primary navigation</text>
+
+  <line x1="58" y1="598" x2="100" y2="598" stroke="#10b981" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arr-green)"/>
+  <text x="110" y="602" font-size="10" fill="#374151">Auto-navigate / shortcut</text>
+
+  <line x1="58" y1="616" x2="100" y2="616" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr-gray)"/>
+  <text x="110" y="620" font-size="10" fill="#374151">Optional path</text>
+
+  <!-- localStorage note -->
+  <rect x="330" y="125" width="0" height="0"/>
+  <rect x="40" y="415" width="240" height="80" rx="8" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="160" y="438" text-anchor="middle" font-size="11" font-weight="bold" fill="#78350f">💾 localStorage</text>
+  <text x="160" y="455" text-anchor="middle" font-size="10" fill="#78350f">Key: "resume"</text>
+  <text x="160" y="470" text-anchor="middle" font-size="10" fill="#78350f">Shared state between pages</text>
+  <text x="160" y="485" text-anchor="middle" font-size="10" fill="#78350f">No server-side DB required</text>
+
+  <!-- Arrow from Upload to localStorage -->
+  <line x1="170" y1="345" x2="160" y2="413" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-gray)"/>
+
+  <!-- Arrow from Build to localStorage -->
+  <line x1="630" y1="345" x2="280" y2="440" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-gray)"/>
+
+</svg>
